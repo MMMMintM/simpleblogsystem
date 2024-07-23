@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mydemo.simpleblogsystem.mapper.ArticleMapper">
+
+    <resultMap id="articleResultMap" type="cn.mydemo.simpleblogsystem.bean.Article">
+        <id column="post_id" jdbcType="INTEGER" property="postId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="content" property="content"/>
+        <result column="user_id" jdbcType="INTEGER" property="userId"/>
+        <result column="created" jdbcType="TIMESTAMP" property="created"/>
+        <result column="last_modified" jdbcType="TIMESTAMP" property="lastModified"/>
+    </resultMap>
+    <insert id="createArticle">
+        INSERT INTO article
+        (title,content,user_id,created,last_modified)
+        VALUES
+            (
+             #{title,jdbcType=VARCHAR},
+             #{content,jdbcType=VARCHAR},
+             #{userId,jdbcType=INTEGER},
+             CURRENT_TIMESTAMP,
+             CURRENT_TIMESTAMP
+            )
+    </insert>
+
+    <select id="getAllArticleByUuserId" resultMap="articleResultMap">
+        SELECT *
+        FROM article
+        WHERE user_id = #{user_id,jdbcType=INTEGER}
+        ORDER BY created
+    </select>
+    <select id="getArticleByPostId" resultType="cn.mydemo.simpleblogsystem.bean.Article">
+        SELECT post_id postId,title,content,user_id userId,created,last_modified lastModified
+        FROM article
+        WHERE post_id = #{post_id,jdbcType=INTEGER}
+    </select>
+    <select id="getUsernameByPostId" resultType="java.lang.String">
+        SELECT u.username
+        FROM article a,user u
+        WHERE a.post_id = #{post_id,jdbcType=INTEGER}
+        AND a.user_id = u.user_id
+    </select>
+
+    <update id="updateArticle" parameterType="cn.mydemo.simpleblogsystem.bean.Article">
+        UPDATE article
+        SET title = #{title},
+            content = #{content},
+            last_modified = CURRENT_TIMESTAMP
+        WHERE post_id = #{postId}
+    </update>
+
+    <delete id="deleteArticle">
+        DELETE FROM article
+        WHERE post_id = #{post_id}
+    </delete>
+
+</mapper>

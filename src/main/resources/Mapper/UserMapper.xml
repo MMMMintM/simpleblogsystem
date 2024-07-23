@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.mydemo.simpleblogsystem.mapper.UserMapper">
+
+    <insert id="register" parameterType="cn.mydemo.simpleblogsystem.bean.User">
+        INSERT INTo user
+        (
+        username,
+        email,
+        password,
+        salt,
+        created,
+        last_modified
+        )
+        VALUES
+        (
+        #{user.username},
+        #{user.email},
+        #{user.password},
+        #{user.salt},
+        CURRENT_TIMESTAMP,
+        CURRENT_TIMESTAMP
+        )
+    </insert>
+
+    <select id="isUsernameExist" resultType="int">
+        SELECT COUNT(*)
+        FROM user
+        WHERE username = #{username,jdbcType=VARCHAR}
+    </select>
+
+    <select id="isEmailExist" resultType="int">
+        SELECT COUNT(*)
+        FROM user
+        WHERE email = #{email,jdbcType=VARCHAR}
+    </select>
+
+    <select id="loginRequestForm" resultType="cn.mydemo.simpleblogsystem.bean.LoginResult">
+        SELECT user_id userId,username,password,salt,email,created,last_modified lastModified
+        FROM user
+        WHERE username = #{username,jdbcType=VARCHAR}
+    </select>
+    <select id="me" resultType="cn.mydemo.simpleblogsystem.bean.User">
+        SELECT user_id userId,username,password,salt,email,created,last_modified lastModified
+        FROM user
+        WHERE username = #{username,jdbcType=VARCHAR}
+    </select>
+
+</mapper>
